@@ -1,3 +1,9 @@
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
+
+from frappe.utils import get_datetime, get_system_timezone
+
+
 def extract_filter_values(filters: list, conditions: list[dict]) -> tuple:
 	"""Extracts specific filter values from a filter list based on given conditions."""
 
@@ -22,3 +28,31 @@ def rename_keys(data: dict, rename_map: dict) -> dict:
 	"""
 
 	return {rename_map.get(k, k): v for k, v in data.items()}
+
+
+def convert_to_utc(
+	date_time: datetime | str, from_timezone: str | None = None, naive: bool = False
+) -> "datetime":
+	"""Converts the given datetime to UTC timezone."""
+
+	dt = get_datetime(date_time)
+	if dt.tzinfo is None:
+		tz = ZoneInfo(from_timezone or get_system_timezone())
+		dt = dt.replace(tzinfo=tz)
+
+	utc_dt = dt.astimezone(timezone.utc)
+	return utc_dt.replace(tzinfo=None) if naive else utc_dt
+
+
+def add_or_update_tzinfo(date_time: datetime | str, timezone: str | None = None) -> str:
+	"""Adds or updates timezone to the datetime."""
+
+	date_time = get_datetime(date_time)
+	target_tz = ZoneInfo(timezone or get_system_timezone())
+
+	if date_time.tzinfo is None:
+		date_time = date_time.replace(tzinfo=target_tz)
+	else:
+		date_time = date_time.astimezone(target_tz)
+
+	return str(date_time)

@@ -3,8 +3,11 @@ import vobject
 from caldav import DAVClient
 from caldav.calendarobjectresource import Event
 from caldav.collection import Calendar
+from caldav.lib.error import NotFoundError
 from frappe import _
-from uuid_utils import uuid7
+from frappe.utils import now
+
+from schedule.utils import convert_to_utc
 
 
 class CalDAVClient:
@@ -14,6 +17,12 @@ class CalDAVClient:
 		"""Initialize the CalDAV client."""
 
 		self.client = DAVClient(**kwargs)
+
+	def get_calendars(self) -> list[Calendar]:
+		"""Returns a list of calendars from the CalDAV server."""
+
+		principal = self.client.principal()
+		return principal.calendars()
 
 	def add_calendar(self, name: str, cal_id: str | None = None) -> Calendar:
 		"""Creates a new calendar on the CalDAV server."""
@@ -31,12 +40,6 @@ class CalDAVClient:
 		if raise_exception:
 			frappe.throw(_("Calendar with ID {0} not found.").format(cal_id))
 
-	def get_calendars(self) -> list[Calendar]:
-		"""Returns a list of calendars from the CalDAV server."""
-
-		principal = self.client.principal()
-		return principal.calendars()
-
 	def delete_calendar(self, calendar: Calendar | None = None, cal_id: str | None = None) -> None:
 		"""Deletes a calendar from the CalDAV server by its instance or ID."""
 
@@ -48,33 +51,38 @@ class CalDAVClient:
 
 		calendar.delete()
 
+	def get_events(self, calendar: Calendar) -> list[Event]:
+		"""Returns a list of events from a specified calendar."""
+
+		try:
+			return calendar.events()
+		except NotFoundError:
+			return []
+
 	def add_event(self, calendar: Calendar, event_data: dict) -> str:
 		"""Creates a new event in a specified calendar."""
 
 		cal = vobject.iCalendar()
-		event = cal.add("vevent")
-
-		event_data["uid"] = str(uuid7())
+		vevent = cal.add("vevent")
 
 		for key, value in event_data.items():
-			event.add(key).value = value
+			if value is not None:
+				vevent.add(key).value = value
 
-		calendar.add_event(event.serialize())
+		calendar.add_event(vevent.serialize())
 
 		return event_data["uid"]
 
 	def get_event(self, calendar: Calendar, event_uid: str, raise_exception: bool = False) -> Event | None:
 		"""Returns an event from a specified calendar by its UID."""
 
-		event_uid = event_uid.replace(".ics", "")
-
-		for event in calendar.events():
-			vevent = event.vobject_instance.vevent
-			if hasattr(vevent, "uid") and vevent.uid.value == event_uid:
-				return event
-
-		if raise_exception:
-			frappe.throw(_("Event with UID {0} not found in calendar {1}.").format(event_uid, calendar.name))
+		try:
+			return calendar.event_by_uid(event_uid)
+		except NotFoundError:
+			if raise_exception:
+				frappe.throw(
+					_("Event with UID {0} not found in calendar {1}.").format(event_uid, calendar.name)
+				)
 
 	def update_event(
 		self,
@@ -94,10 +102,23 @@ class CalDAVClient:
 			event = self.get_event(calendar, event_uid, raise_exception=True)
 
 		updated_data.pop("uid", None)
+		updated_data["dtstamp"] = convert_to_utc(now(), naive=True)
 
+		vobj = event.vobject_instance
+		vevent = vobj.vevent
 		for key, value in updated_data.items():
-			if hasattr(event.vevent, key):
-				setattr(event.vevent, key, value)
+			if value is None:
+				continue
+			elif hasattr(vevent, key):
+				vevent_contents = getattr(vevent, key)
+				if hasattr(vevent_contents, "value"):
+					vevent_contents.value = value
+				else:
+					setattr(vevent, key, value)
+			else:
+				vevent.add(key).value = value
+
+		event._vobject_instance = vobj
 		event.save()
 
 	def delete_event(

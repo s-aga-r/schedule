@@ -61,7 +61,7 @@ def add_calendar(name: str, cal_name: str | None = None) -> None:
 
 
 def get_calendar(name: str) -> dict:
-	"""Returns a calendar for the given user by its ID."""
+	"""Returns a calendar for the given name."""
 
 	user, cal_id = name.split("|")
 	client = get_caldav_client(user)
@@ -90,11 +90,9 @@ def fetch_calendars(user: str, page: int = 1, limit: int = 10) -> list:
 def format_calendar(user: str, calendar: Calendar) -> dict:
 	"""Returns a formatted calendar dictionary."""
 
-	url = unquote(str(calendar.url))
-
 	return {
-		"url": url,
 		"user": user,
 		"_name": calendar.name,
 		"name": f"{user}|{calendar.id}",
+		"url": unquote(str(calendar.url)),
 	}

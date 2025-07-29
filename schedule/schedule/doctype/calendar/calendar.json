@@ -52,8 +52,13 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_virtual": 1,
- "links": [],
- "modified": "2025-07-29 12:44:27.077136",
+ "links": [
+  {
+   "link_doctype": "Calendar Event",
+   "link_fieldname": "calendar"
+  }
+ ],
+ "modified": "2025-07-30 14:38:25.218400",
  "modified_by": "Administrator",
  "module": "Schedule",
  "name": "Calendar",
