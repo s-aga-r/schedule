@@ -32,16 +32,19 @@ class Calendar(Document):
 	@staticmethod
 	def get_list(filters=None, page_length=20, **kwargs) -> list:
 		filters = filters or []
-		if user := extract_filter_values(filters, [{"user": "="}]):
-			if user := user[0]:
-				calendars = fetch_calendars(user, limit=page_length)
-				if not calendars:
-					frappe.msgprint(_("No calendars found."), alert=True)
+		user_values = extract_filter_values(filters, [{"user": "="}])
+		user = user_values[0] if user_values and user_values[0] else frappe.session.user
 
-				return calendars
+		if not user or user in ["Administrator", "Guest"]:
+			frappe.msgprint(_("Please select a user to view calendars."), alert=True)
+			return []
 
-		frappe.msgprint(_("Please select a user to view calendars."), alert=True)
-		return []
+		calendars = fetch_calendars(user, limit=page_length)
+
+		if not calendars:
+			frappe.msgprint(_("No calendars found."), alert=True)
+
+		return calendars
 
 	@staticmethod
 	def get_count(filters=None, **kwargs) -> int:

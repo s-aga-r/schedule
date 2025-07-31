@@ -54,16 +54,18 @@ class CalendarEvent(Document):
 	@staticmethod
 	def get_list(filters=None, page_length=20, **kwargs) -> list:
 		filters = filters or []
-		if user := extract_filter_values(filters, [{"user": "="}]):
-			if user := user[0]:
-				events = fetch_events(user, limit=page_length)
-				if not events:
-					frappe.msgprint(_("No events found."), alert=True)
+		user_values = extract_filter_values(filters, [{"user": "="}])
+		user = user_values[0] if user_values and user_values[0] else frappe.session.user
 
-				return events
+		if not user or user in ["Administrator", "Guest"]:
+			frappe.msgprint(_("Please select a user to view events."), alert=True)
+			return []
 
-		frappe.msgprint(_("Please select a user to view events."), alert=True)
-		return []
+		events = fetch_events(user, limit=page_length)
+		if not events:
+			frappe.msgprint(_("No events found."), alert=True)
+
+		return events
 
 	@staticmethod
 	def get_count(filters=None, **kwargs) -> int:
