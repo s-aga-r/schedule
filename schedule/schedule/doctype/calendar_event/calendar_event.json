@@ -21,6 +21,8 @@
   "location",
   "column_break_vqlp",
   "rrule",
+  "section_break_pofi",
+  "attendees",
   "section_break_youn",
   "ical_raw"
  ],
@@ -153,13 +155,23 @@
    "no_copy": 1,
    "read_only": 1,
    "set_only_once": 1
+  },
+  {
+   "fieldname": "section_break_pofi",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "attendees",
+   "fieldtype": "Table",
+   "label": "Attendees",
+   "options": "Calendar Event Attendee"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_virtual": 1,
  "links": [],
- "modified": "2025-07-31 11:30:25.699522",
+ "modified": "2025-07-31 11:46:12.328601",
  "modified_by": "Administrator",
  "module": "Schedule",
  "name": "Calendar Event",

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import frappe
 import vobject
 from caldav import DAVClient
@@ -59,6 +61,11 @@ class CalDAVClient:
 		except NotFoundError:
 			return []
 
+	def get_events_between(self, calendar: Calendar, start: datetime, end: datetime) -> list[Event]:
+		"""Returns events in the calendar within a time range."""
+
+		return calendar.date_search(start=start, end=end)
+
 	def add_event(self, calendar: Calendar, event_data: dict) -> str:
 		"""Creates a new event in a specified calendar."""
 
@@ -66,11 +73,22 @@ class CalDAVClient:
 		vevent = cal.add("vevent")
 
 		for key, value in event_data.items():
-			if value is not None:
+			if key == "attendees" and isinstance(value, list):
+				for att in value:
+					attendee = vevent.add("attendee")
+					attendee.value = f"mailto:{att['email']}"
+
+					if att.get("cn"):
+						attendee.params["CN"] = att["cn"]
+					if att.get("role"):
+						attendee.params["ROLE"] = att["role"]
+
+					attendee.params["PARTSTAT"] = att.get("partstat", "NEEDS-ACTION")
+					attendee.params["RSVP"] = att.get("rsvp", "TRUE")
+			elif value is not None:
 				vevent.add(key).value = value
 
 		calendar.add_event(vevent.serialize())
-
 		return event_data["uid"]
 
 	def get_event(self, calendar: Calendar, event_uid: str, raise_exception: bool = False) -> Event | None:

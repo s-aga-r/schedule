@@ -19,12 +19,16 @@ class CalendarEvent(Document):
 		self.name = f"{self.calendar}|{uuid7()!s}"
 
 	def db_insert(self, *args, **kwargs) -> None:
+		attendees = [
+			{"email": attendee.email, "cn": attendee.cn, "role": attendee.role} for attendee in self.attendees
+		]
 		event_data = {
 			"dtstamp": convert_to_utc(now(), naive=True),
 			"dtstart": convert_to_utc(self.dtstart, naive=True),
 			"summary": self.summary,
 			"description": self.description,
 			"location": self.location,
+			"attendees": attendees,
 		}
 		if self.dtend:
 			event_data["dtend"] = convert_to_utc(self.dtend, naive=True)
@@ -154,5 +158,18 @@ def format_event(user: str, event: Event) -> dict:
 		value = getattr(vevent, key, None)
 		if value and getattr(value, "value", None):
 			formatted_event[key] = str(transform(value.value))
+
+	formatted_event["attendees"] = []
+	if hasattr(vevent, "attendee"):
+		for attendee in vevent.attendee_list:
+			formatted_event["attendees"].append(
+				{
+					"email": attendee.value.replace("mailto:", ""),
+					"cn": attendee.params.get("CN"),
+					"role": attendee.params.get("ROLE"),
+					"partstat": str(attendee.params.get("PARTSTAT")),
+					"rsvp": str(attendee.params.get("RSVP")),
+				}
+			)
 
 	return formatted_event
