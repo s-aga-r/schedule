@@ -1,6 +1,5 @@
 {
  "actions": [],
- "allow_rename": 1,
  "creation": "2025-07-31 11:44:50.500940",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -9,9 +8,11 @@
   "section_break_qfjh",
   "email",
   "cn",
+  "cutype",
   "column_break_npyv",
   "role",
   "partstat",
+  "x_num_guests",
   "rsvp"
  ],
  "fields": [
@@ -20,6 +21,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "description": "Email address of the attendee.",
    "fieldname": "email",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -30,6 +32,7 @@
    "set_only_once": 1
   },
   {
+   "description": "Common name or display name of the attendee.",
    "fieldname": "cn",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -37,34 +40,63 @@
    "no_copy": 1
   },
   {
+   "default": "REQ-PARTICIPANT",
+   "description": "Role of the attendee in the event.",
    "fieldname": "role",
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "ROLE",
    "no_copy": 1,
-   "options": "\nCHAIR\nREQ-PARTICIPANT\nOPT-PARTICIPANT\nNON-PARTICIPANT"
+   "options": "REQ-PARTICIPANT\nOPT-PARTICIPANT\nCHAIR\nNON-PARTICIPANT",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_npyv",
    "fieldtype": "Column Break"
   },
   {
+   "default": "NEEDS-ACTION",
+   "description": "Current participation status.",
    "fieldname": "partstat",
-   "fieldtype": "Data",
+   "fieldtype": "Select",
    "in_list_view": 1,
    "label": "PARTSTAT",
    "no_copy": 1,
+   "options": "NEEDS-ACTION\nACCEPTED\nDECLINED\nTENTATIVE\nDELEGATED",
    "read_only": 1,
+   "reqd": 1,
    "set_only_once": 1
   },
   {
+   "default": "1",
+   "description": "Indicates if a response (RSVP) is requested from the attendee.",
    "fieldname": "rsvp",
-   "fieldtype": "Data",
+   "fieldtype": "Check",
    "in_list_view": 1,
    "label": "RSVP",
    "no_copy": 1,
    "read_only": 1,
    "set_only_once": 1
+  },
+  {
+   "default": "INDIVIDUAL",
+   "description": "Type of calendar user.",
+   "fieldname": "cutype",
+   "fieldtype": "Select",
+   "label": "CUTYPE",
+   "no_copy": 1,
+   "options": "INDIVIDUAL\nGROUP\nRESOURCE\nROOM\nUNKNOWN",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "description": "Number of additional guests the attendee is bringing.",
+   "fieldname": "x_num_guests",
+   "fieldtype": "Int",
+   "label": "X-NUM-GUESTS",
+   "no_copy": 1,
+   "non_negative": 1,
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -72,7 +104,7 @@
  "is_virtual": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-31 15:38:50.303213",
+ "modified": "2025-08-13 11:14:45.076011",
  "modified_by": "Administrator",
  "module": "Schedule",
  "name": "Calendar Event Attendee",

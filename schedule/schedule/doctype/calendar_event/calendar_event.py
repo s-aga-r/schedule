@@ -7,7 +7,7 @@ import frappe
 from caldav.calendarobjectresource import Event
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import convert_utc_to_system_timezone, now
+from frappe.utils import cint, convert_utc_to_system_timezone, now
 from uuid_utils import uuid7
 
 from schedule.calendar import get_caldav_client
@@ -135,6 +135,12 @@ def fetch_events(user: str, page: int = 1, limit: int = 10) -> list:
 def format_event(user: str, event: Event) -> dict:
 	"""Returns a formatted event dictionary for the given user and event."""
 
+	def get_param(value: str | list) -> str | None:
+		if isinstance(value, list):
+			return str(value[0]) if value else None
+
+		return str(value) if value else None
+
 	vevent = event.vobject_instance.vevent
 	calendar = f"{user}|{event.parent.id}"
 
@@ -162,13 +168,16 @@ def format_event(user: str, event: Event) -> dict:
 	formatted_event["attendees"] = []
 	if hasattr(vevent, "attendee"):
 		for attendee in vevent.attendee_list:
+			rsvp = 0 if get_param(attendee.params.get("RSVP")) == "FALSE" else 1
 			formatted_event["attendees"].append(
 				{
 					"email": attendee.value.replace("mailto:", ""),
-					"cn": attendee.params.get("CN"),
-					"role": attendee.params.get("ROLE"),
-					"partstat": str(attendee.params.get("PARTSTAT")),
-					"rsvp": str(attendee.params.get("RSVP")),
+					"cn": get_param(attendee.params.get("CN")),
+					"cutype": get_param(attendee.params.get("CUTYPE") or "INDIVIDUAL"),
+					"role": get_param(attendee.params.get("ROLE") or "REQ-PARTICIPANT"),
+					"partstat": get_param(attendee.params.get("PARTSTAT") or "NEEDS-ACTION"),
+					"x_num_guests": cint(get_param(attendee.params.get("X-NUM-GUESTS"))),
+					"rsvp": rsvp,
 				}
 			)
 
