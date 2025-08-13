@@ -24,7 +24,7 @@
   "rrule",
   "section_break_pofi",
   "attendees",
-  "section_break_youn",
+  "raw_ical_section",
   "ical_raw"
  ],
  "fields": [
@@ -133,10 +133,6 @@
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "section_break_youn",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "column_break_arqi",
    "fieldtype": "Column Break"
   },
@@ -178,13 +174,19 @@
    "options": "TENTATIVE\nCONFIRMED\nCANCELLED",
    "reqd": 1,
    "set_only_once": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "raw_ical_section",
+   "fieldtype": "Section Break",
+   "label": "Raw iCal"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_virtual": 1,
  "links": [],
- "modified": "2025-08-13 11:45:51.472821",
+ "modified": "2025-08-13 12:01:24.754522",
  "modified_by": "sagar.s@frappe.io",
  "module": "Schedule",
  "name": "Calendar Event",

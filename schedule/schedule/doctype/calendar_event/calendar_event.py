@@ -151,6 +151,11 @@ def format_event(user: str, event: Event) -> dict:
 	vevent = event.vobject_instance.vevent
 	calendar = f"{user}|{event.parent.id}"
 
+	try:
+		ical_raw = event.data.decode("utf-8") if isinstance(event.data, bytes) else str(event.data)
+	except Exception:
+		ical_raw = ""
+
 	creation = to_local_str(getattr(getattr(vevent, "created", None), "value", vevent.dtstamp.value))
 	modified = to_local_str(getattr(getattr(vevent, "last_modified", None), "value", vevent.dtstamp.value))
 
@@ -161,6 +166,7 @@ def format_event(user: str, event: Event) -> dict:
 		"url": unquote(str(event.url)),
 		"name": f"{calendar}|{vevent.uid.value}",
 		"dtstart": to_local_str(vevent.dtstart.value),
+		"ical_raw": ical_raw,
 		"creation": creation,
 		"modified": modified,
 	}
