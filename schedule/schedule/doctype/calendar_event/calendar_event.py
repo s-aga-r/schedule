@@ -135,14 +135,24 @@ def fetch_events(user: str, page: int = 1, limit: int = 10) -> list:
 def format_event(user: str, event: Event) -> dict:
 	"""Returns a formatted event dictionary for the given user and event."""
 
-	def get_param(value: str | list) -> str | None:
-		if isinstance(value, list):
-			return str(value[0]) if value else None
+	def get_param(value: list | str, default: str | None = None) -> str | None:
+		"""Extract the first value from a list or return the string value directly."""
 
-		return str(value) if value else None
+		if isinstance(value, list):
+			return str(value[0]) if value else default
+
+		return str(value) if value else default
+
+	def to_local_str(dt_value) -> str:
+		"""Convert a datetime value to system timezone string."""
+
+		return str(convert_utc_to_system_timezone(dt_value))
 
 	vevent = event.vobject_instance.vevent
 	calendar = f"{user}|{event.parent.id}"
+
+	creation = to_local_str(getattr(getattr(vevent, "created", None), "value", vevent.dtstamp.value))
+	modified = to_local_str(getattr(getattr(vevent, "last_modified", None), "value", vevent.dtstamp.value))
 
 	formatted_event = {
 		"user": user,
@@ -150,35 +160,42 @@ def format_event(user: str, event: Event) -> dict:
 		"uid": vevent.uid.value,
 		"url": unquote(str(event.url)),
 		"name": f"{calendar}|{vevent.uid.value}",
-		"dtstart": str(convert_utc_to_system_timezone(vevent.dtstart.value)),
-		"creation": str(convert_utc_to_system_timezone(vevent.dtstamp.value)),
-		"modified": str(convert_utc_to_system_timezone(vevent.dtstamp.value)),
+		"dtstart": to_local_str(vevent.dtstart.value),
+		"creation": creation,
+		"modified": modified,
 	}
 
-	optional_keys = {
+	optional_fields = {
+		"status": str,
 		"summary": str,
+		"location": str,
+		"organizer": str,
 		"description": str,
 		"dtend": convert_utc_to_system_timezone,
 	}
-	for key, transform in optional_keys.items():
-		value = getattr(vevent, key, None)
-		if value and getattr(value, "value", None):
-			formatted_event[key] = str(transform(value.value))
+	for key, transform in optional_fields.items():
+		field_obj = getattr(vevent, key, None)
+		if field_obj and getattr(field_obj, "value", None):
+			value = field_obj.value
+			if key == "organizer":
+				value = value.replace("mailto:", "")
+			formatted_event[key] = str(transform(value))
+
+	if not formatted_event.get("status"):
+		formatted_event["status"] = "CONFIRMED"
 
 	formatted_event["attendees"] = []
-	if hasattr(vevent, "attendee"):
-		for attendee in vevent.attendee_list:
-			rsvp = 0 if get_param(attendee.params.get("RSVP")) == "FALSE" else 1
-			formatted_event["attendees"].append(
-				{
-					"email": attendee.value.replace("mailto:", ""),
-					"cn": get_param(attendee.params.get("CN")),
-					"cutype": get_param(attendee.params.get("CUTYPE") or "INDIVIDUAL"),
-					"role": get_param(attendee.params.get("ROLE") or "REQ-PARTICIPANT"),
-					"partstat": get_param(attendee.params.get("PARTSTAT") or "NEEDS-ACTION"),
-					"x_num_guests": cint(get_param(attendee.params.get("X-NUM-GUESTS"))),
-					"rsvp": rsvp,
-				}
-			)
+	for attendee in getattr(vevent, "attendee_list", []):
+		formatted_event["attendees"].append(
+			{
+				"email": attendee.value.replace("mailto:", ""),
+				"cn": get_param(attendee.params.get("CN")),
+				"cutype": get_param(attendee.params.get("CUTYPE"), "INDIVIDUAL"),
+				"role": get_param(attendee.params.get("ROLE"), "REQ-PARTICIPANT"),
+				"partstat": get_param(attendee.params.get("PARTSTAT"), "NEEDS-ACTION"),
+				"x_num_guests": cint(get_param(attendee.params.get("X-NUM-GUESTS"), "0")),
+				"rsvp": 0 if get_param(attendee.params.get("RSVP")) == "FALSE" else 1,
+			}
+		)
 
 	return formatted_event

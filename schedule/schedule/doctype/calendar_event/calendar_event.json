@@ -6,6 +6,7 @@
  "field_order": [
   "section_break_nbke",
   "user",
+  "status",
   "calendar",
   "column_break_fwhr",
   "uid",
@@ -165,14 +166,26 @@
    "fieldtype": "Table",
    "label": "Attendees",
    "options": "Calendar Event Attendee"
+  },
+  {
+   "default": "CONFIRMED",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Status",
+   "no_copy": 1,
+   "options": "TENTATIVE\nCONFIRMED\nCANCELLED",
+   "reqd": 1,
+   "set_only_once": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_virtual": 1,
  "links": [],
- "modified": "2025-07-31 11:46:12.328601",
- "modified_by": "Administrator",
+ "modified": "2025-08-13 11:45:51.472821",
+ "modified_by": "sagar.s@frappe.io",
  "module": "Schedule",
  "name": "Calendar Event",
  "owner": "Administrator",
