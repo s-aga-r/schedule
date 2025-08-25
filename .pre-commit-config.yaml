@@ -8,7 +8,7 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
-        files: "schedule.*"
+        files: "frappe_calendar.*"
         exclude: ".*json$|.*txt$|.*csv|.*md|.*svg"
       - id: check-merge-conflict
       - id: check-ast
@@ -38,11 +38,11 @@ repos:
         # Ignore any files that might contain jinja / bundles
         exclude: |
             (?x)^(
-                schedule/public/dist/.*|
+                frappe_calendar/public/dist/.*|
                 .*node_modules.*|
                 .*boilerplate.*|
-                schedule/templates/includes/.*|
-                schedule/public/js/lib/.*
+                frappe_calendar/templates/includes/.*|
+                frappe_calendar/public/js/lib/.*
             )$
 
 
@@ -55,12 +55,12 @@ repos:
         # Ignore any files that might contain jinja / bundles
         exclude: |
             (?x)^(
-                schedule/public/dist/.*|
+                frappe_calendar/public/dist/.*|
                 cypress/.*|
                 .*node_modules.*|
                 .*boilerplate.*|
-                schedule/templates/includes/.*|
-                schedule/public/js/lib/.*
+                frappe_calendar/templates/includes/.*|
+                frappe_calendar/public/js/lib/.*
             )$
 
 ci:

@@ -9,7 +9,7 @@ from caldav.lib.error import NotFoundError
 from frappe import _
 from frappe.utils import now
 
-from schedule.utils import convert_to_utc
+from frappe_calendar.utils import convert_to_utc
 
 
 class CalDAVClient:

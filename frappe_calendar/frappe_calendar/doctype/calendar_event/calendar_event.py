@@ -10,8 +10,8 @@ from frappe.model.document import Document
 from frappe.utils import cint, convert_utc_to_system_timezone, now
 from uuid_utils import uuid7
 
-from schedule.calendar import get_caldav_client
-from schedule.utils import convert_to_utc, extract_filter_values
+from frappe_calendar.calendar import get_caldav_client
+from frappe_calendar.utils import convert_to_utc, extract_filter_values
 
 
 class CalendarEvent(Document):

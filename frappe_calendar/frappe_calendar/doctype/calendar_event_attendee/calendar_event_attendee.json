@@ -106,7 +106,7 @@
  "links": [],
  "modified": "2025-08-13 11:14:45.076011",
  "modified_by": "Administrator",
- "module": "Schedule",
+ "module": "Frappe Calendar",
  "name": "Calendar Event Attendee",
  "owner": "Administrator",
  "permissions": [],

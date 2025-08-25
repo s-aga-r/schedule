@@ -1,6 +1,6 @@
 import frappe
 
-from schedule.schedule.doctype.calendar.calendar import fetch_calendars
+from frappe_calendar.frappe_calendar.doctype.calendar.calendar import fetch_calendars
 
 
 @frappe.whitelist()

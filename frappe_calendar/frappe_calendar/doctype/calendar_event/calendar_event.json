@@ -188,7 +188,7 @@
  "links": [],
  "modified": "2025-08-13 12:01:24.754522",
  "modified_by": "sagar.s@frappe.io",
- "module": "Schedule",
+ "module": "Frappe Calendar",
  "name": "Calendar Event",
  "owner": "Administrator",
  "permissions": [

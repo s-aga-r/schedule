@@ -1,7 +1,7 @@
-app_name = "schedule"
-app_title = "Schedule"
+app_name = "frappe_calendar"
+app_title = "Frappe Calendar"
 app_publisher = "Frappe Technologies Pvt. Ltd."
-app_description = "Frappe Schedule"
+app_description = "Frappe Calendar"
 app_email = "developers@frappe.io"
 app_license = "agpl-3.0"
 
@@ -13,11 +13,11 @@ app_license = "agpl-3.0"
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
 # 	{
-# 		"name": "schedule",
-# 		"logo": "/assets/schedule/logo.png",
-# 		"title": "Schedule",
-# 		"route": "/schedule",
-# 		"has_permission": "schedule.api.permission.has_app_permission"
+# 		"name": "frappe_calendar",
+# 		"logo": "/assets/frappe_calendar/logo.png",
+# 		"title": "Frappe Calendar",
+# 		"route": "/frappe_calendar",
+# 		"has_permission": "frappe_calendar.api.permission.has_app_permission"
 # 	}
 # ]
 
@@ -25,15 +25,15 @@ app_license = "agpl-3.0"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/schedule/css/schedule.css"
-# app_include_js = "/assets/schedule/js/schedule.js"
+# app_include_css = "/assets/frappe_calendar/css/frappe_calendar.css"
+# app_include_js = "/assets/frappe_calendar/js/frappe_calendar.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/schedule/css/schedule.css"
-# web_include_js = "/assets/schedule/js/schedule.js"
+# web_include_css = "/assets/frappe_calendar/css/frappe_calendar.css"
+# web_include_js = "/assets/frappe_calendar/js/frappe_calendar.js"
 
 # include custom scss in every website theme (without file extension ".scss")
-# website_theme_scss = "schedule/public/scss/website"
+# website_theme_scss = "frappe_calendar/public/scss/website"
 
 # include js, css files in header of web form
 # webform_include_js = {"doctype": "public/js/doctype.js"}
@@ -51,7 +51,7 @@ app_license = "agpl-3.0"
 # Svg Icons
 # ------------------
 # include app icons in desk
-# app_include_icons = "schedule/public/icons.svg"
+# app_include_icons = "frappe_calendar/public/icons.svg"
 
 # Home Pages
 # ----------
@@ -78,43 +78,43 @@ app_license = "agpl-3.0"
 
 # add methods and filters to jinja environment
 # jinja = {
-# 	"methods": "schedule.utils.jinja_methods",
-# 	"filters": "schedule.utils.jinja_filters"
+# 	"methods": "frappe_calendar.utils.jinja_methods",
+# 	"filters": "frappe_calendar.utils.jinja_filters"
 # }
 
 # Installation
 # ------------
 
-# before_install = "schedule.install.before_install"
-# after_install = "schedule.install.after_install"
+# before_install = "frappe_calendar.install.before_install"
+# after_install = "frappe_calendar.install.after_install"
 
 # Uninstallation
 # ------------
 
-# before_uninstall = "schedule.uninstall.before_uninstall"
-# after_uninstall = "schedule.uninstall.after_uninstall"
+# before_uninstall = "frappe_calendar.uninstall.before_uninstall"
+# after_uninstall = "frappe_calendar.uninstall.after_uninstall"
 
 # Integration Setup
 # ------------------
 # To set up dependencies/integrations with other apps
 # Name of the app being installed is passed as an argument
 
-# before_app_install = "schedule.utils.before_app_install"
-# after_app_install = "schedule.utils.after_app_install"
+# before_app_install = "frappe_calendar.utils.before_app_install"
+# after_app_install = "frappe_calendar.utils.after_app_install"
 
 # Integration Cleanup
 # -------------------
 # To clean up dependencies/integrations with other apps
 # Name of the app being uninstalled is passed as an argument
 
-# before_app_uninstall = "schedule.utils.before_app_uninstall"
-# after_app_uninstall = "schedule.utils.after_app_uninstall"
+# before_app_uninstall = "frappe_calendar.utils.before_app_uninstall"
+# after_app_uninstall = "frappe_calendar.utils.after_app_uninstall"
 
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config
 
-# notification_config = "schedule.notifications.get_notification_config"
+# notification_config = "frappe_calendar.notifications.get_notification_config"
 
 # Permissions
 # -----------
@@ -145,39 +145,39 @@ app_license = "agpl-3.0"
 
 # scheduler_events = {
 # 	"all": [
-# 		"schedule.tasks.all"
+# 		"frappe_calendar.tasks.all"
 # 	],
 # 	"daily": [
-# 		"schedule.tasks.daily"
+# 		"frappe_calendar.tasks.daily"
 # 	],
 # 	"hourly": [
-# 		"schedule.tasks.hourly"
+# 		"frappe_calendar.tasks.hourly"
 # 	],
 # 	"weekly": [
-# 		"schedule.tasks.weekly"
+# 		"frappe_calendar.tasks.weekly"
 # 	],
 # 	"monthly": [
-# 		"schedule.tasks.monthly"
+# 		"frappe_calendar.tasks.monthly"
 # 	],
 # }
 
 # Testing
 # -------
 
-# before_tests = "schedule.install.before_tests"
+# before_tests = "frappe_calendar.install.before_tests"
 
 # Overriding Methods
 # ------------------------------
 #
 # override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "schedule.event.get_events"
+# 	"frappe.desk.doctype.event.event.get_events": "frappe_calendar.event.get_events"
 # }
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
 # override_doctype_dashboards = {
-# 	"Task": "schedule.task.get_dashboard_data"
+# 	"Task": "frappe_calendar.task.get_dashboard_data"
 # }
 
 # exempt linked doctypes from being automatically cancelled
@@ -191,13 +191,13 @@ app_license = "agpl-3.0"
 
 # Request Events
 # ----------------
-# before_request = ["schedule.utils.before_request"]
-# after_request = ["schedule.utils.after_request"]
+# before_request = ["frappe_calendar.utils.before_request"]
+# after_request = ["frappe_calendar.utils.after_request"]
 
 # Job Events
 # ----------
-# before_job = ["schedule.utils.before_job"]
-# after_job = ["schedule.utils.after_job"]
+# before_job = ["frappe_calendar.utils.before_job"]
+# after_job = ["frappe_calendar.utils.after_job"]
 
 # User Data Protection
 # --------------------
@@ -227,7 +227,7 @@ app_license = "agpl-3.0"
 # --------------------------------
 
 # auth_hooks = [
-# 	"schedule.auth.validate"
+# 	"frappe_calendar.auth.validate"
 # ]
 
 # Automatically update python controller files with type annotations for this app.
@@ -236,4 +236,3 @@ app_license = "agpl-3.0"
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
-

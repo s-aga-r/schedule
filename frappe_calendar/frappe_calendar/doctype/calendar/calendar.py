@@ -8,8 +8,8 @@ from frappe import _
 from frappe.model.document import Document
 from uuid_utils import uuid7
 
-from schedule.calendar import get_caldav_client
-from schedule.utils import extract_filter_values
+from frappe_calendar.calendar import get_caldav_client
+from frappe_calendar.utils import extract_filter_values
 
 
 class Calendar(Document):

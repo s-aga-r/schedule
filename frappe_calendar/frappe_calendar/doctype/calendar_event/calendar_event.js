@@ -8,7 +8,7 @@ frappe.ui.form.on("Calendar Event", {
 
 	set_queries(frm) {
 		frm.set_query("calendar", () => ({
-			query: "schedule.utils.query.get_user_calendars",
+			query: "frappe_calendar.utils.query.get_user_calendars",
 			filters: {
 				user: frm.doc.user,
 			},

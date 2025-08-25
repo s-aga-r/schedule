@@ -1,9 +1,9 @@
 [project]
-name = "schedule"
+name = "frappe_calendar"
 authors = [
     { name = "Frappe Technologies Pvt. Ltd.", email = "developers@frappe.io"}
 ]
-description = "Frappe Schedule"
+description = "Frappe Calendar"
 requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]
